@@ -1,0 +1,309 @@
+﻿<Window x:Class="BarcodeAttendanceSystem_WPF_.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converter="clr-namespace:BarcodeAttendanceSystem_WPF_.Converter"
+        Title="Barcode Attendance Systm - 0300-4197674 Tahir Aslam" 
+        Height="768" Width="1024"
+        KeyDown="Window_KeyDown"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
+        WindowStyle="None" ResizeMode="NoResize"
+        Icon="Assets/SMS.ico" Topmost="False">
+    <Window.Resources>
+        <converter:ByteArrayToImageConverter x:Key="imageConverter" />        
+        <Style x:Key="ListViewStyle2" TargetType="{x:Type ListView}">
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="False"/>
+
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListView}">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" 
+        					BorderThickness="{TemplateBinding BorderThickness}"
+        					Background="{TemplateBinding Background}"
+                             CornerRadius="15"    />
+                        
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid Background="White">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="75"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="320"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+
+            <Border Background="Black"
+                    BorderBrush="Gray"
+                    BorderThickness="0"
+                    Height="75"
+                    CornerRadius="0,0,30,30"
+                    Grid.Row="0">
+                <TextBlock HorizontalAlignment="Left"
+                           Text="{Binding institute_name}"
+                           Foreground="LightGray"
+                           FontSize="35"
+                           VerticalAlignment="Center"
+                           Margin="20,0,0,0"                           
+                           />
+            </Border>
+            <Grid MinHeight="40"
+                  Grid.Row="1"
+                  >
+                <Border Background="Red"                        
+                        MinWidth="500"
+                        CornerRadius="15"
+                        HorizontalAlignment="Center"
+                        Name="msgGRID"
+                        Visibility="Collapsed"
+                        Margin="5"
+                        Grid.Row="1"
+                        >
+                    <TextBlock  HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Name="msgTB"
+                                Text="There is some problem"
+                                FontSize="20"
+                                TextWrapping="Wrap"
+                                />
+
+                </Border>
+            </Grid>
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="300" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="234" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="300" />
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Row="0"
+                      Name="StudentSP"
+                      Margin="5,0,0,0">
+                    <Border BorderThickness="3"
+                        BorderBrush="Gray"
+                        CornerRadius="5"
+                        Background="Transparent">
+                        <Image Stretch="UniformToFill"
+                               Source="{Binding Path=std_image, Converter={StaticResource imageConverter}}"     />
+                    </Border>
+                </Grid>
+                <Border Grid.Column="1"
+                        
+                        Margin="40,0,0,0"
+                        BorderBrush="Gray"
+                        CornerRadius="15">
+                    <StackPanel Margin="10"
+                                x:Name="studentProfileSP">
+                        <StackPanel Orientation="Horizontal"
+                                    Height="70">
+                            <TextBlock Width="160"
+                                       Text=""
+                                       VerticalAlignment="Center"
+                                       FontSize="20"
+                                       Foreground="WhiteSmoke"
+                                       HorizontalAlignment="Left"/>
+                            <TextBlock Text="2015-10-12 Wednesday"
+                                       FontSize="46"
+                                       Foreground="DarkGray"
+                                       VerticalAlignment="Center"
+                                       x:Name="date_TB"
+                                       HorizontalAlignment="Left"
+                                       Width="Auto"
+                                       FontFamily="Segoe UI Light"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Height="50">
+                            <TextBlock Width="160"
+                                       Text="Name"
+                                       VerticalAlignment="Center"
+                                       FontSize="25"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Left"
+                                       FontFamily="Segoe UI Light"/>
+                            <TextBlock HorizontalAlignment="Left"
+                                       Width="Auto"
+                                       VerticalAlignment="Center"
+                                       FontSize="37"   
+                                       Foreground="Black"
+                                       Text="{Binding std_name}"                                       
+                                       FontFamily="Segoe UI Light"
+                                       />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Height="50">
+                            <TextBlock Width="160"
+                                       Text="Father Name"
+                                       VerticalAlignment="Center"
+                                       FontSize="25"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Left"
+                                       FontFamily="Segoe UI Light"/>
+                            <TextBlock HorizontalAlignment="Left"
+                                       Width="Auto"
+                                       VerticalAlignment="Center"
+                                       FontSize="30"      
+                                       Foreground="Black"
+                                       Text="{Binding father_name}" 
+                                       FontFamily="Segoe UI Light"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Height="50">
+                            <TextBlock Width="160"
+                                       Text="Adm #"
+                                       VerticalAlignment="Center"
+                                       FontSize="25"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Left"
+                                       FontFamily="Segoe UI Light"/>
+                            <TextBlock HorizontalAlignment="Left"
+                                       Width="Auto"
+                                       VerticalAlignment="Center"
+                                       FontSize="27" 
+                                       Foreground="Black"
+                                       Text="{Binding adm_no}" 
+                                       FontFamily="Segoe UI Light"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Height="50">
+                            <TextBlock Width="160"
+                                       Text="Class"
+                                       VerticalAlignment="Center"
+                                       FontSize="25"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Left"
+                                       FontFamily="Segoe UI Light"/>
+                            <TextBlock HorizontalAlignment="Left"
+                                       Width="Auto"
+                                       VerticalAlignment="Center"
+                                       FontSize="27"  
+                                       Foreground="Black"
+                                       Text="{Binding class_name}" 
+                                       FontFamily="Segoe UI Light"
+                                       />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                <Grid Grid.Column="2">
+                    <Image HorizontalAlignment="Right"                       
+                           VerticalAlignment="Center"
+                           MaxWidth="300"                           
+                           Stretch="Uniform"
+                           Source="{Binding Path=institute_logo, Converter={StaticResource imageConverter}}"
+                           Margin="0,0,10,0"
+                     />
+                </Grid>
+
+            </Grid>
+            <Border Grid.Row="3"                  
+                  VerticalAlignment="Bottom"
+                  CornerRadius="20"                    
+                  Background="Purple"
+                  Margin="5,10,5,0">
+                <ListView BorderBrush="WhiteSmoke"
+                          BorderThickness="1"                          
+                          Background="Purple"                          
+                          Name="listview1"                          
+                          VerticalAlignment="Bottom"
+                          Height="200"                             
+                          IsEnabled="True">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"></StackPanel>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>                                
+                                <StackPanel Grid.Row="0"
+                                            Orientation="Vertical"
+                                            VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding count}"
+                                               FontSize="25"
+                                               HorizontalAlignment="Center"
+                                               Foreground="White"
+                                               Margin="0,5,0,0"/>
+                                    <Image  Height="110"
+                                            Stretch="Uniform"
+                                            Margin="5"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Source="{Binding Path=std_image, Converter={StaticResource imageConverter}}"     />
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Border>
+            <Grid Grid.Row="4" 
+                  VerticalAlignment="Center"
+                  Margin="10,0,20,0">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="© 2018 Tahir Aslam, 0300-4197674 A Product of Scenario Digital."
+                               Foreground="Gray"
+                               VerticalAlignment="Center"
+                               FontSize="16"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right">
+                    <TextBlock Text="Total SMS Sent"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Name="v_TotalSmsSent"
+                               Text="000"
+                               Foreground="Green"
+                               Margin="10,0,0,0"
+                               FontStyle="Italic"
+                               FontSize="30"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text="/"
+                               FontSize="25"
+                               Foreground="Gray"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Name="v_TotalSmsQueued"
+                               Text="000"
+                               Foreground="DarkGray"
+                               Margin="10,0,0,0"
+                               FontStyle="Italic"
+                               FontSize="20"                               
+                               VerticalAlignment="Center"/>
+
+                    <Ellipse Fill="Red">
+                        <Ellipse.Triggers>
+                            <EventTrigger RoutedEvent="Ellipse.Loaded">
+                                <EventTrigger.Actions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Ellipse.Fill).(SolidColorBrush.Color)"
+                                                      Duration="0:0:2"
+                                                      FillBehavior="HoldEnd"
+                                                      RepeatBehavior="Forever">
+                                                <ColorAnimationUsingKeyFrames.KeyFrames>
+                                                    <DiscreteColorKeyFrame KeyTime="0:0:0" Value="Red"/>
+                                                    <DiscreteColorKeyFrame KeyTime="0:0:1" Value="Blue"/>
+                                                </ColorAnimationUsingKeyFrames.KeyFrames>
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger.Actions>
+                            </EventTrigger>
+                        </Ellipse.Triggers>
+                    </Ellipse>
+                    
+                </StackPanel>
+            </Grid>
+
+        </Grid>
+    </Grid>
+</Window>
