@@ -116,12 +116,6 @@
     <Resource Include="Assets\StoreLogo.scale-100.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Scenario.GSMSMSEngine\Scenario.GSMSMSEngine\Scenario.GSMSMSEngine.csproj">
-      <Project>{5f8a229f-4742-4ba8-ac83-876bd2314592}</Project>
-      <Name>Scenario.GSMSMSEngine</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Assets\SMS.ico" />
     <Content Include="Lib\MySql.Data.dll" />
   </ItemGroup>

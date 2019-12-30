@@ -17,6 +17,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Scenario.GSMSMSEngine;
 using System.Windows.Threading;
+using System.IO;
 
 namespace BarcodeAttendanceSystem_WPF_
 {
@@ -43,12 +44,20 @@ namespace BarcodeAttendanceSystem_WPF_
         SMSEngine m_SMSEngine;
         DispatcherTimer refreshDataTimer;
         RfidDAL rfidDAL;
+
+        public static string Database = "sms";
+        public static string Server = "localhost";
+        public static string Port = "3306";
+        public static string Uid = "root";
+
         public MainWindow()
         {
             InitializeComponent();
 
             //this.InitializeComponent();
             //CoreWindow.GetForCurrentThread().KeyDown += MyPage_KeyDown;
+            ReadDatabaseFile();
+
             instituteDAL = new InstituteDAL();
             studentDAL = new StudentDAL();
             miscDAL = new MiscDAL();
@@ -275,6 +284,56 @@ namespace BarcodeAttendanceSystem_WPF_
                     textInput = textInput + input;
                 }
 
+            }
+        }
+        void ReadDatabaseFile()
+        {
+            string line;
+            int i = 0;
+            var fileName = "Database.txt";
+            var spFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var folderPath = System.IO.Path.Combine(spFolderPath, "ScenarioSystems", "RFID Attendance ");
+            var filePath = System.IO.Path.Combine(folderPath, fileName);
+
+            try
+            {
+                //using (StreamReader sr = new StreamReader(spFolderPath + "Database.txt"))
+                using (StreamReader sr = new StreamReader(filePath))
+
+                {
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        if (i == 0 && line.Trim() != "")
+                        {
+                            Server = line;
+                        }
+                        if (i == 1 && line.Trim() != "")
+                        {
+                            Port = line;
+                        }
+                        if (i == 2 && line.Trim() != "")
+                        {
+                            Database = line;
+                        }
+                        if (i == 3 && line.Trim() != "")
+                        {
+                            Uid = line;
+                        }
+                        i++;
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+                Directory.CreateDirectory(folderPath);
+                using (StreamWriter outputFile = new StreamWriter(System.IO.Path.Combine(folderPath, fileName)))
+                {
+                    outputFile.WriteLine("localhost");
+                    outputFile.WriteLine("3306");
+                    outputFile.WriteLine("sms");
+                    outputFile.WriteLine("root");
+                }
             }
         }
     }
