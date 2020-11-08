@@ -72,10 +72,10 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>ScenarioLogo.ico</ApplicationIcon>
+    <ApplicationIcon>Assets\ScenarioLogo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MySql.Data, Version=6.8.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
@@ -164,12 +164,6 @@
     <Resource Include="Assets\SMS.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\GSMSMSEngine\Scenario.GSMSMSEngine\Scenario.GSMSMSEngine.csproj">
-      <Project>{5f8a229f-4742-4ba8-ac83-876bd2314592}</Project>
-      <Name>Scenario.GSMSMSEngine</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
@@ -183,7 +177,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Lib\MySql.Data.dll" />
-    <Resource Include="ScenarioLogo.ico" />
+    <Resource Include="Assets\ScenarioLogo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GSMSMSEngine\Scenario.GSMSMSEngine\Scenario.GSMSMSEngine.csproj">
+      <Project>{5f8a229f-4742-4ba8-ac83-876bd2314592}</Project>
+      <Name>Scenario.GSMSMSEngine</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

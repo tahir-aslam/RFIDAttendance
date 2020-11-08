@@ -2,13 +2,13 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:converter="clr-namespace:BarcodeAttendanceSystem_WPF_.Converter"
-        Title="Barcode Attendance Systm - 0300-4197674 Tahir Aslam" 
+        Title="RFID Attendance Systm - 0300-4197674 Tahir Aslam" 
         Height="768" Width="1024"
         KeyDown="Window_KeyDown"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
         WindowStyle="None" ResizeMode="NoResize"
-        Icon="Assets/SMS.ico" Topmost="False">
+        Icon="Assets/ScenarioLogo.ico" Topmost="False">
     <Window.Resources>
         <converter:ByteArrayToImageConverter x:Key="imageConverter" />        
         <Style x:Key="ListViewStyle2" TargetType="{x:Type ListView}">

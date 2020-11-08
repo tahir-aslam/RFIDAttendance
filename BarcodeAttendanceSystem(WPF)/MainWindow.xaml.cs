@@ -70,7 +70,7 @@ namespace BarcodeAttendanceSystem_WPF_
                 AllStudentList = studentDAL.get_all_admissions();
                 absentAllStudents();
 
-                m_SMSEngine = new SMSEngine();
+                m_SMSEngine = new SMSEngine(ConnectionString.con_string);
 
                 StartRefreshTimer();
             }
