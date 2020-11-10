@@ -26,6 +26,24 @@ namespace BarcodeAttendanceSystem_WPF_
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        public static string Server { get; set; }
+        public static string Port { get; set; }
+        public static string Uid { get; set; }
+        private static string _Database;
+        public static string Database
+        {
+            get
+            {
+                return _Database;
+            }
+            set
+            {
+                _Database = value;
+            }
+        }
+
+
         InstituteDAL instituteDAL;
         StudentDAL studentDAL;
         MiscDAL miscDAL;
@@ -45,10 +63,7 @@ namespace BarcodeAttendanceSystem_WPF_
         DispatcherTimer refreshDataTimer;
         RfidDAL rfidDAL;
 
-        public static string Database = "sms";
-        public static string Server = "localhost";
-        public static string Port = "3306";
-        public static string Uid = "root";
+        
 
         public MainWindow()
         {
@@ -56,6 +71,8 @@ namespace BarcodeAttendanceSystem_WPF_
 
             //this.InitializeComponent();
             //CoreWindow.GetForCurrentThread().KeyDown += MyPage_KeyDown;
+
+
             ReadDatabaseFile();
 
             instituteDAL = new InstituteDAL();
@@ -82,6 +99,58 @@ namespace BarcodeAttendanceSystem_WPF_
             }
         }
 
+        void ReadDatabaseFile()
+        {
+            string line;
+            int i = 0;
+            var fileName = "Database.txt";
+            var spFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var folderPath = System.IO.Path.Combine(spFolderPath, "ScenarioSystems", "RFID Attendance");
+            var filePath = System.IO.Path.Combine(folderPath, fileName);
+
+            try
+            {
+                //using (StreamReader sr = new StreamReader(spFolderPath + "Database.txt"))
+                using (StreamReader sr = new StreamReader(filePath))
+
+                {
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        if (i == 0 && line.Trim() != "")
+                        {
+                            Server = line;
+                        }
+                        if (i == 1 && line.Trim() != "")
+                        {
+                            Port = line;
+                        }
+                        if (i == 2 && line.Trim() != "")
+                        {
+                            Database = line;
+                        }
+                        if (i == 3 && line.Trim() != "")
+                        {
+                            Uid = line;
+                        }
+                        i++;
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+                Directory.CreateDirectory(folderPath);
+                using (StreamWriter outputFile = new StreamWriter(System.IO.Path.Combine(folderPath, fileName)))
+                {
+                    outputFile.WriteLine("localhost");
+                    outputFile.WriteLine("3306");
+                    outputFile.WriteLine("sms");
+                    outputFile.WriteLine("root");
+                }
+            }
+            String con_string = "Server=" + Server + "; port=" + Port + "; Database=" + Database + "; Uid=" + Uid + "; Pwd=7120020@123; default command timeout=99999;CHARSET=utf8; SslMode=None;";
+            ConnectionString.con_string = con_string;
+        }
         void StartRefreshTimer()
         {
             refreshDataTimer = new DispatcherTimer();
@@ -286,55 +355,6 @@ namespace BarcodeAttendanceSystem_WPF_
 
             }
         }
-        void ReadDatabaseFile()
-        {
-            string line;
-            int i = 0;
-            var fileName = "Database.txt";
-            var spFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            var folderPath = System.IO.Path.Combine(spFolderPath, "ScenarioSystems", "RFID Attendance ");
-            var filePath = System.IO.Path.Combine(folderPath, fileName);
-
-            try
-            {
-                //using (StreamReader sr = new StreamReader(spFolderPath + "Database.txt"))
-                using (StreamReader sr = new StreamReader(filePath))
-
-                {
-                    while ((line = sr.ReadLine()) != null)
-                    {
-                        if (i == 0 && line.Trim() != "")
-                        {
-                            Server = line;
-                        }
-                        if (i == 1 && line.Trim() != "")
-                        {
-                            Port = line;
-                        }
-                        if (i == 2 && line.Trim() != "")
-                        {
-                            Database = line;
-                        }
-                        if (i == 3 && line.Trim() != "")
-                        {
-                            Uid = line;
-                        }
-                        i++;
-                    }
-
-                }
-            }
-            catch (Exception e)
-            {
-                Directory.CreateDirectory(folderPath);
-                using (StreamWriter outputFile = new StreamWriter(System.IO.Path.Combine(folderPath, fileName)))
-                {
-                    outputFile.WriteLine("localhost");
-                    outputFile.WriteLine("3306");
-                    outputFile.WriteLine("sms");
-                    outputFile.WriteLine("root");
-                }
-            }
-        }
+        
     }
 }
