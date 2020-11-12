@@ -179,12 +179,6 @@
     <Content Include="Lib\MySql.Data.dll" />
     <Resource Include="Assets\ScenarioLogo.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GSMSMSEngine\Scenario.GSMSMSEngine\Scenario.GSMSMSEngine.csproj">
-      <Project>{5f8a229f-4742-4ba8-ac83-876bd2314592}</Project>
-      <Name>Scenario.GSMSMSEngine</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
