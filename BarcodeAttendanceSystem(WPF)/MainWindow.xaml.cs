@@ -18,6 +18,8 @@ using System.Windows.Shapes;
 using Scenario.GSMSMSEngine;
 using System.Windows.Threading;
 using System.IO;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 
 namespace BarcodeAttendanceSystem_WPF_
 {
@@ -63,7 +65,7 @@ namespace BarcodeAttendanceSystem_WPF_
         DispatcherTimer refreshDataTimer;
         RfidDAL rfidDAL;
 
-        
+
 
         public MainWindow()
         {
@@ -73,12 +75,15 @@ namespace BarcodeAttendanceSystem_WPF_
             //CoreWindow.GetForCurrentThread().KeyDown += MyPage_KeyDown;
 
 
-            ReadDatabaseFile();
+           
 
             instituteDAL = new InstituteDAL();
             studentDAL = new StudentDAL();
             miscDAL = new MiscDAL();
             rfidDAL = new RfidDAL();
+
+            ReadDatabaseFile();
+
             try
             {
                 institue = instituteDAL.GetInstitute();
@@ -150,6 +155,69 @@ namespace BarcodeAttendanceSystem_WPF_
             }
             String con_string = "Server=" + Server + "; port=" + Port + "; Database=" + Database + "; Uid=" + Uid + "; Pwd=7120020@123; default command timeout=99999;CHARSET=utf8; SslMode=None;";
             ConnectionString.con_string = con_string;
+
+            // check connnection
+            try
+            {
+                miscDAL.OpenLocalDatabaseConnection(ConnectionString.con_string);
+            }
+            catch (Exception ex)
+            {
+                CheckAllNetwork(con_string);
+            }
+        }
+
+        void CheckAllNetwork(string conString)
+        {
+            GetAllLocalIPv4(NetworkInterfaceType.Ethernet);
+            MessageBox.Show("wireless");
+            GetAllLocalIPv4(NetworkInterfaceType.Wireless80211);
+
+
+            string myHost = System.Net.Dns.GetHostName();
+
+            System.Net.IPHostEntry myIPs = System.Net.Dns.GetHostEntry(myHost);
+
+            // Loop through all IP addresses and display each 
+
+            foreach (System.Net.IPAddress ip in myIPs.AddressList)
+            {
+                conString = "Server=" + ip.ToString() + "; port=" + Port + "; Database=" + Database + "; Uid=" + Uid + "; Pwd=7120020@123; default command timeout=99999;CHARSET=utf8; SslMode=None;";
+                ConnectionString.con_string = conString;
+                try
+                {
+                    MessageBox.Show(ConnectionString.con_string +"     total="+myIPs.AddressList.Count());
+                    if (ip.ToString().StartsWith("192"))
+                    {                        
+                        miscDAL.OpenLocalDatabaseConnection(conString);
+                        //break;
+                    }
+                }
+                catch (Exception exx)
+                {
+                    MessageBox.Show(exx.Message);
+                    //continue;
+                }
+            }                
+        }
+        public static string[] GetAllLocalIPv4(NetworkInterfaceType _type)
+        {
+            List<string> ipAddrList = new List<string>();
+            foreach (NetworkInterface item in NetworkInterface.GetAllNetworkInterfaces())
+            {
+                if (item.NetworkInterfaceType == _type && item.OperationalStatus == OperationalStatus.Up)
+                {
+                    foreach (UnicastIPAddressInformation ip in item.GetIPProperties().UnicastAddresses)
+                    {
+                        if (ip.Address.AddressFamily == AddressFamily.InterNetwork)
+                        {
+                            ipAddrList.Add(ip.Address.ToString());
+                            MessageBox.Show(ip.Address.ToString());
+                        }
+                    }
+                }
+            }
+            return ipAddrList.ToArray();
         }
         void StartRefreshTimer()
         {
@@ -285,7 +353,7 @@ namespace BarcodeAttendanceSystem_WPF_
                                         receiver_name = student.std_name,
                                         receiver_cell_no = student.cell_no,
                                         receiver_type_id = 1,
-                                        sms_message = "Respected Parents," + Environment.NewLine + "AoA," + Environment.NewLine + student.std_name + " has entered in school at " + DateTime.Now.ToString("hh:mm tt")+Environment.NewLine+"On "+DateTime.Now.ToString("dd-MMM-yy")+"."  + Environment.NewLine + "Admin " + institue.institute_name + "." + Environment.NewLine + institue.institute_phone + Environment.NewLine + institue.institute_cell,
+                                        sms_message = "Respected Parents," + Environment.NewLine + "AoA," + Environment.NewLine + student.std_name + " has entered in school at " + DateTime.Now.ToString("hh:mm tt") + Environment.NewLine + "On " + DateTime.Now.ToString("dd-MMM-yy") + "." + Environment.NewLine + "Admin " + institue.institute_name + "." + Environment.NewLine + institue.institute_phone + Environment.NewLine + institue.institute_cell,
                                         sms_type = "RFID Attendance SMS",
                                         sms_type_id = 9,
                                         created_by = "admin",
@@ -355,6 +423,6 @@ namespace BarcodeAttendanceSystem_WPF_
 
             }
         }
-        
+
     }
 }

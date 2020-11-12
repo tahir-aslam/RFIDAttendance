@@ -52,5 +52,21 @@ namespace BarcodeAttendanceSystem_WPF_.DAL
             }
             return i;
         }
+
+        public MySqlConnection OpenLocalDatabaseConnection(string conString)
+        {
+            try
+            {
+                using (MySqlConnection con = new MySqlConnection(conString))
+                {
+                    con.Open();
+                    return con;
+                }
+            }
+            catch (MySqlException ex)
+            {
+                throw ex;
+            }
+        }
     }
 }
