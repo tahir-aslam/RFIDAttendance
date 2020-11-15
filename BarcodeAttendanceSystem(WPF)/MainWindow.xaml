@@ -37,6 +37,7 @@
                 <RowDefinition Height="75"/>
                 <RowDefinition Height="40"/>
                 <RowDefinition Height="320"/>
+                <RowDefinition Height="50"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="30"/>
             </Grid.RowDefinitions>
@@ -66,7 +67,8 @@
                         Visibility="Collapsed"
                         Margin="5"
                         Grid.Row="1"
-                        >
+                        Grid.RowSpan="2"
+                        VerticalAlignment="Top">
                     <TextBlock  HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Name="msgTB"
@@ -206,6 +208,9 @@
                 </Grid>
 
             </Grid>
+            <Grid Grid.Row="3">
+                
+            </Grid>
             <Border Grid.Row="3"                  
                   VerticalAlignment="Bottom"
                   CornerRadius="20"                    
@@ -303,7 +308,6 @@
                     
                 </StackPanel>
             </Grid>
-
         </Grid>
     </Grid>
 </Window>

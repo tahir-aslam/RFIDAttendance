@@ -60,7 +60,7 @@ namespace BarcodeAttendanceSystem_WPF_
         List<StudentAttendance> insertAttendanceList;
         StudentAttendance sa;
         bool check = false;
-        public static string m_SessionID = "6";
+        public static string m_SessionID = "7";
         SMSEngine m_SMSEngine;
         DispatcherTimer refreshDataTimer;
         RfidDAL rfidDAL;
@@ -169,8 +169,9 @@ namespace BarcodeAttendanceSystem_WPF_
 
         void CheckAllNetwork(string conString)
         {
+            MessageBox.Show("Ethernet");
             GetAllLocalIPv4(NetworkInterfaceType.Ethernet);
-            MessageBox.Show("wireless");
+            MessageBox.Show("Wireless");
             GetAllLocalIPv4(NetworkInterfaceType.Wireless80211);
 
 
@@ -186,11 +187,11 @@ namespace BarcodeAttendanceSystem_WPF_
                 ConnectionString.con_string = conString;
                 try
                 {
-                    MessageBox.Show(ConnectionString.con_string +"     total="+myIPs.AddressList.Count());
+                    //MessageBox.Show(ConnectionString.con_string +"     total="+myIPs.AddressList.Count());
                     if (ip.ToString().StartsWith("192"))
                     {                        
                         miscDAL.OpenLocalDatabaseConnection(conString);
-                        //break;
+                        break;
                     }
                 }
                 catch (Exception exx)
@@ -265,12 +266,13 @@ namespace BarcodeAttendanceSystem_WPF_
             if (studentDAL.insertAllStudentAttendance(insertAttendanceList) > 0)
             {
 
-                msgGRID.Visibility = Visibility.Collapsed;
+                msgTB.Text = "All Students Absent Inserted";
+                msgGRID.Visibility = Visibility.Visible;
             }
             else
             {
-                Debug.WriteLine("All Student Absent Not Inserted");
-                msgTB.Text = "All Student Absent Not Inserted";
+                Debug.WriteLine("All Students Absent Not Inserted Already");
+                msgTB.Text = "All Students Absent Inserted Already";
                 msgGRID.Visibility = Visibility.Visible;
             }
 

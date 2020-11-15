@@ -12,7 +12,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
 
 namespace Scenario.GSMSMSEngine
 {
@@ -32,7 +31,6 @@ namespace Scenario.GSMSMSEngine
         bool isWholeSent = false;
         int i = 0;
 
-        DispatcherTimer refreshDataTimer;
         DAL.MiscDAL miscDAL;
         public bool m_IsEncoded = false;
         public List<SMSQueue> m_SmsNos = new List<SMSQueue>();
@@ -47,7 +45,6 @@ namespace Scenario.GSMSMSEngine
             {
                 m_SmsNos = miscDAL.GetSMSQueue();
                 StartSMSEngine();
-                StartDataTimer();
             }
             catch (Exception ex)
             {
@@ -59,14 +56,6 @@ namespace Scenario.GSMSMSEngine
         #region Send SMS
 
         static AutoResetEvent readNow = new AutoResetEvent(false);
-
-        public void StartDataTimer()
-        {
-            refreshDataTimer = new DispatcherTimer();
-            refreshDataTimer.Interval = new TimeSpan(0, 0, 5);
-            refreshDataTimer.Tick += refreshDataTimer_Tick;
-            refreshDataTimer.Start();
-        }
 
         void refreshDataTimer_Tick(object sender, EventArgs e)
         {
@@ -93,7 +82,6 @@ namespace Scenario.GSMSMSEngine
                     }
                 }
 
-                openPort();
                 bw = new BackgroundWorker();
                 bw.WorkerReportsProgress = true;
                 bw.WorkerSupportsCancellation = true;
@@ -104,7 +92,8 @@ namespace Scenario.GSMSMSEngine
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                //MessageBox.Show(ex.Message);
+                throw ex;
             }
         }
         public void openPort()
@@ -118,6 +107,7 @@ namespace Scenario.GSMSMSEngine
             catch (Exception ex)
             {
                 //MessageBox.Show("Opening Port Exception: " + ex.Message);
+                throw ex;
             }
         }
         public void closePort()
@@ -139,32 +129,46 @@ namespace Scenario.GSMSMSEngine
             BackgroundWorker worker = sender as BackgroundWorker;
             try
             {
+                try
+                {
+                    openPort();
+                }
+                catch (Exception ex)
+                {
+                    //not handling 
+                }
+
                 do
                 {
                     foreach (var smsQueue in m_SmsNos)
                     {
-
-                        Thread.Sleep(500);
-
-                        if (sendMsg(smsQueue, worker, e))
-                        {                            
-                            //MessageBox.Show("Message has sent successfully", "Successfully Sent", MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                        else
+                        try
                         {
-                            //MessageBox.Show("Failed to send message", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
+                            Thread.Sleep(500);
 
+                            if (sendMsg(smsQueue, worker, e))
+                            {
+                                //MessageBox.Show("Message has sent successfully", "Successfully Sent", MessageBoxButton.OK, MessageBoxImage.Information);
+                            }
+                            else
+                            {
+                                //MessageBox.Show("Failed to send message", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                        }
                     }
                     m_SmsNos = miscDAL.GetSMSQueue();
-                    Thread.Sleep(1000);                    
+                    Thread.Sleep(1000);
                 }
                 while (true);
 
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                //MessageBox.Show(ex.Message);
+                throw ex;
             }
             finally
             {
@@ -195,100 +199,102 @@ namespace Scenario.GSMSMSEngine
         }
         public bool sendMsg(SMSQueue obj, BackgroundWorker worker, DoWorkEventArgs e)
         {
-            bool isSend = false;
-            i = 0;
+            try
+            {
+                bool isSend = false;
+                i = 0;
 
-            SmsSubmitPdu[] pdu;
-            if (m_IsEncoded)
-            {
-                pdu = CreateConcatTextMessage(obj.sms_message, true, Convert.ToString("+92" + obj.receiver_cell_no));
-            }
-            else
-            {
-                pdu = CreateConcatTextMessage(obj.sms_message, false, Convert.ToString("+92" + obj.receiver_cell_no));
-            }
+                #region PDU Creation
 
-            for (int j = 0; j < pdu.Length; j++)
-            {
+                SmsSubmitPdu[] pdu;
                 try
                 {
-                    if (comm.IsConnected())
+                    if (m_IsEncoded)
                     {
-                        comm.SendMessage(pdu[j]);
-                        isSend = true;
-                        m_TotalSmsSent++;
-                        if (j + 1 == pdu.Length)
-                        {
-                            isWholeSent = true;
-                            obj.sms_status = "Sent";
-                        }
+                        pdu = CreateConcatTextMessage(obj.sms_message, true, Convert.ToString("+92" + obj.receiver_cell_no));
                     }
                     else
                     {
-                        j--;
-                        // MessageBox.Show("IsConnected=false", "Error", MessageBoxButton.OK, MessageBoxImage.Stop);
-                        Thread.Sleep(1000);
-                        openPort();
-                        isSend = false;
-                        obj.sms_status = "Not Sent";
-                        Thread.Sleep(1000);
-
-                        //j--;
+                        pdu = CreateConcatTextMessage(obj.sms_message, false, Convert.ToString("+92" + obj.receiver_cell_no));
                     }
                 }
                 catch (Exception ex)
                 {
-                    if (ex.Message == "Message service error 50 occurred.")
-                    {
-                    }
-                    else 
-                    {
-                    }                    
-                    isSend = false;
-                    obj.sms_status = "Not Sent";
+                    return false;
                 }
 
-            }
-            // saved to sms history table whether sent or not
+                #endregion
 
-            sh = new SMSHistory();
-            sh.sender_id = obj.id.ToString();
-            sh.sender_name = obj.receiver_name;
-            sh.class_id = obj.class_id.ToString();
-            sh.class_name = obj.class_name;
-            sh.section_id = obj.section_id.ToString();
-            sh.section_name = obj.section_name;
-            sh.cell = obj.receiver_cell_no;
-            sh.msg = obj.sms_message;
-            sh.sms_type = obj.sms_type;
-            sh.created_by = obj.created_by;
-            sh.date_time = DateTime.Now;
+                #region Message Sedning
 
-            if (miscDAL.InsertSMSHistory(sh) > 0)
-            {
-                if (miscDAL.UpdateSMSQueue(obj) > 0)
+                if (comm.IsConnected() && comm.IsOpen())
                 {
+                    comm.SendMessages(pdu);
+                    isSend = true;
+                    obj.sms_status = "Sent";
 
                 }
                 else
                 {
-                    MessageBox.Show("Not updated sms queue");
+                    Thread.Sleep(500);
+                    openPort();
+                    isSend = false;
+                    obj.sms_status = "Not Sent";
+                    Thread.Sleep(1000);
+                    return false;
                 }
+
+                #endregion
+
+                #region Insert History And Update queue
+
+                sh = new SMSHistory();
+                sh.sender_id = obj.id.ToString();
+                sh.sender_name = obj.receiver_name;
+                sh.class_id = obj.class_id.ToString();
+                sh.class_name = obj.class_name;
+                sh.section_id = obj.section_id.ToString();
+                sh.section_name = obj.section_name;
+                sh.cell = obj.receiver_cell_no;
+                sh.msg = obj.sms_message;
+                sh.sms_type = obj.sms_type;
+                sh.created_by = obj.created_by;
+                sh.date_time = DateTime.Now;
+
+                if (miscDAL.InsertSMSHistory(sh) > 0)
+                {
+                    if (miscDAL.UpdateSMSQueue(obj) > 0)
+                    {
+
+                    }
+                    else
+                    {
+                        //MessageBox.Show("Not updated sms queue");
+                    }
+                }
+                else
+                {
+                    //MessageBox.Show("Sms History not inserted");
+                }
+
+
+                return isSend;
+
+                #endregion
             }
-            else
+            catch (Exception ex)
+
             {
-                MessageBox.Show("Sms History not inserted");
+                return false;
             }
 
-
-            return isSend;
         }
         public void setConnected()
         {
             string cmbCOM = "COM22";
             if (cmbCOM == "")
             {
-                MessageBox.Show("Invalid Port Name");
+                //MessageBox.Show("Invalid Port Name");
                 return;
             }
             comm = new GsmCommMain(cmbCOM, 115200, 150);
@@ -303,7 +309,7 @@ namespace Scenario.GSMSMSEngine
                     //Cursor.Current = Cursors.WaitCursor;
                     comm.Open();
                     //Cursor.Current = Cursors.Default;
-                    MessageBox.Show("Modem Connected Sucessfully");
+                    //MessageBox.Show("Modem Connected Sucessfully");
                 }
                 catch (Exception)
                 {

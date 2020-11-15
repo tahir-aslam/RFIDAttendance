@@ -121,7 +121,7 @@ namespace BarcodeAttendanceSystem_WPF_.DAL
                 {
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
-                        cmd.CommandText = "SELECT std_id FROM sms_student_attendence  where attendence_date=@attendence_date && session_id=@session_id";
+                        cmd.CommandText = "SELECT std_id FROM sms_student_attendence  where attendence_date=@attendence_date";
                         cmd.Connection = con;
                         cmd.Parameters.Add("@attendence_date", MySqlDbType.Date).Value = dt;
                         cmd.Parameters.Add("@session_id", MySql.Data.MySqlClient.MySqlDbType.VarChar).Value = MainWindow.m_SessionID;
