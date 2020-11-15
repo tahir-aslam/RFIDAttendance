@@ -19,12 +19,12 @@ namespace BarcodeAttendanceSystem_WPF_.DAL
                 {
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
-                        cmd.CommandText = "select * from sms_rfid_assignment where card_no="+card_no;
+                        cmd.CommandText = "select * from sms_rfid_assignment where card_no=" + card_no;
                         cmd.Connection = con;
                         con.Open();
 
                         MySqlDataReader reader = cmd.ExecuteReader();
-                        while (reader.Read()) 
+                        while (reader.Read())
                         {
                             rfid_assignment obj = new rfid_assignment()
                             {
@@ -32,7 +32,7 @@ namespace BarcodeAttendanceSystem_WPF_.DAL
                                 is_std = Convert.ToString(reader["is_std"]),
                             };
                             return obj;
-                        }                  
+                        }
                     }
                 }
             }
@@ -44,7 +44,7 @@ namespace BarcodeAttendanceSystem_WPF_.DAL
             return null;
         }
 
-         public int InserRfidCard(rfid_assignment obj)
+        public int InserRfidCard(rfid_assignment obj)
         {
             int i = 0;
             try
@@ -79,5 +79,5 @@ namespace BarcodeAttendanceSystem_WPF_.DAL
             return i;
         }
     }
-    
+
 }

@@ -10,7 +10,7 @@
         WindowStyle="None" ResizeMode="NoResize"
         Icon="Assets/ScenarioLogo.ico" Topmost="False">
     <Window.Resources>
-        <converter:ByteArrayToImageConverter x:Key="imageConverter" />        
+        <converter:ByteArrayToImageConverter x:Key="imageConverter" />
         <Style x:Key="ListViewStyle2" TargetType="{x:Type ListView}">
             <Setter Property="IsTabStop" Value="False"/>
             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
@@ -25,7 +25,7 @@
         					BorderThickness="{TemplateBinding BorderThickness}"
         					Background="{TemplateBinding Background}"
                              CornerRadius="15"    />
-                        
+
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -37,7 +37,7 @@
                 <RowDefinition Height="75"/>
                 <RowDefinition Height="40"/>
                 <RowDefinition Height="320"/>
-                <RowDefinition Height="50"/>
+                <RowDefinition Height="0"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="30"/>
             </Grid.RowDefinitions>
@@ -79,30 +79,33 @@
 
                 </Border>
             </Grid>
-            <Grid Grid.Row="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="300" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
+            <Grid Grid.Row="2">                
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="234" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="300" />
                 </Grid.ColumnDefinitions>
-
                 <Grid Grid.Row="0"
                       Name="StudentSP"
                       Margin="5,0,0,0">
-                    <Border BorderThickness="3"
+                    <StackPanel>
+                        <Border BorderThickness="1"
                         BorderBrush="Gray"
                         CornerRadius="5"
-                        Background="Transparent">
-                        <Image Stretch="UniformToFill"
+                        Background="Transparent"
+                                Height="270">
+                            <Image Stretch="UniformToFill"
                                Source="{Binding Path=std_image, Converter={StaticResource imageConverter}}"     />
-                    </Border>
+                        </Border>
+                        <Button Content="IN"
+                        FontSize="35"
+                        Background="WhiteSmoke"
+                                BorderThickness="0"
+                        Name="btnInOut"
+                        Click="btnInOut_Click"/>
+                    </StackPanel>
                 </Grid>
-                <Border Grid.Column="1"
-                        
+                <Border Grid.Column="1"                        
                         Margin="40,0,0,0"
                         BorderBrush="Gray"
                         CornerRadius="15">
@@ -209,9 +212,9 @@
 
             </Grid>
             <Grid Grid.Row="3">
-                
+
             </Grid>
-            <Border Grid.Row="3"                  
+            <Border Grid.Row="4"                  
                   VerticalAlignment="Bottom"
                   CornerRadius="20"                    
                   Background="Purple"
@@ -230,7 +233,7 @@
                     </ListView.ItemsPanel>
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Grid>                                
+                            <Grid>
                                 <StackPanel Grid.Row="0"
                                             Orientation="Vertical"
                                             VerticalAlignment="Center">
@@ -251,7 +254,7 @@
                     </ListView.ItemTemplate>
                 </ListView>
             </Border>
-            <Grid Grid.Row="4" 
+            <Grid Grid.Row="5" 
                   VerticalAlignment="Center"
                   Margin="10,0,20,0">
                 <StackPanel Orientation="Horizontal">
@@ -305,7 +308,7 @@
                             </EventTrigger>
                         </Ellipse.Triggers>
                     </Ellipse>
-                    
+
                 </StackPanel>
             </Grid>
         </Grid>

@@ -86,6 +86,15 @@ namespace BarcodeAttendanceSystem_WPF_
 
             try
             {
+                if (DateTime.Now.Hour > 10)
+                {
+                    btnInOut.Content = "OUT";
+                }
+                else
+                {
+                    btnInOut.Content = "IN";
+                }
+
                 institue = instituteDAL.GetInstitute();
                 this.DataContext = institue;
                 date_TB.Text = DateTime.Now.ToString("dd-MMMM-yyy");
@@ -354,8 +363,8 @@ namespace BarcodeAttendanceSystem_WPF_
                                         receiver_id = Convert.ToInt32(student.id),
                                         receiver_name = student.std_name,
                                         receiver_cell_no = student.cell_no,
-                                        receiver_type_id = 1,
-                                        sms_message = "Respected Parents," + Environment.NewLine + "AoA," + Environment.NewLine + student.std_name + " has entered in school at " + DateTime.Now.ToString("hh:mm tt") + Environment.NewLine + "On " + DateTime.Now.ToString("dd-MMM-yy") + "." + Environment.NewLine + "Admin " + institue.institute_name + "." + Environment.NewLine + institue.institute_phone + Environment.NewLine + institue.institute_cell,
+                                        receiver_type_id = 1,                                        
+                                        sms_message = (btnInOut.Content.ToString() == "IN")?("Respected Parents," + Environment.NewLine + "AoA," + Environment.NewLine + student.std_name + " has entered in school at " + DateTime.Now.ToString("hh:mm tt") + Environment.NewLine + "On " + DateTime.Now.ToString("dd-MMM-yy") + "." + Environment.NewLine + "Admin " + institue.institute_name + "." + Environment.NewLine + institue.institute_phone + Environment.NewLine + institue.institute_cell): ("Respected Parents," + Environment.NewLine + "AoA," + Environment.NewLine + student.std_name + " has exited from school at " + DateTime.Now.ToString("hh:mm") + Environment.NewLine + "On " + DateTime.Now.ToString("dd-MMM-yy") + "." + Environment.NewLine + "Admin " + institue.institute_name + "." + Environment.NewLine + institue.institute_phone + Environment.NewLine + institue.institute_cell),
                                         sms_type = "RFID Attendance SMS",
                                         sms_type_id = 9,
                                         created_by = "admin",
@@ -426,5 +435,17 @@ namespace BarcodeAttendanceSystem_WPF_
             }
         }
 
+        private void btnInOut_Click(object sender, RoutedEventArgs e)
+        {
+            if (btnInOut.Content.ToString() == "IN")
+            {
+                btnInOut.Content = "OUT";                
+            }
+            else
+            {
+                btnInOut.Content = "IN";
+            }
+            m_SMSEngine.AttendanceINOut = btnInOut.Content.ToString();
+        }
     }
 }

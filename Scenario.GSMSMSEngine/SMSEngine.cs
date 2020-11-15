@@ -27,6 +27,7 @@ namespace Scenario.GSMSMSEngine
         int error_no = 0;
         public GsmCommMain comm;
         private static ushort refNumber;
+        public string AttendanceINOut;
 
         bool isWholeSent = false;
         int i = 0;
