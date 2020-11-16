@@ -23,7 +23,7 @@ namespace BarcodeAttendanceSystem_WPF_.DAL
             {
                 using (MySqlCommand cmd = new MySqlCommand())
                 {
-                    cmd.CommandText = "SELECT* FROM sms_admission where is_active='Y' && session_id=@session_id && id = @id";
+                    cmd.CommandText = "SELECT* FROM sms_admission where is_active='Y' && id = @id && session_id=(select session_id from sms_admission where id=@id order by session_id DESC Limit 1)";
                     cmd.Parameters.Add("@id",MySqlDbType.Int32).Value = id;
                     cmd.Parameters.Add("@session_id", MySqlDbType.VarChar).Value = MainWindow.m_SessionID;
                     cmd.Connection = con;                   
