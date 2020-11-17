@@ -102,7 +102,8 @@
                         Background="WhiteSmoke"
                                 BorderThickness="0"
                         Name="btnInOut"
-                        Click="btnInOut_Click"/>
+                        Click="btnInOut_Click"
+                                IsEnabled="False"/>
                     </StackPanel>
                 </Grid>
                 <Border Grid.Column="1"                        
